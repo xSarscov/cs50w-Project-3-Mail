@@ -5,6 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
+   
+  const hamBurger = document.querySelector(".toggle-btn");
+
+  hamBurger.addEventListener("click", function () {
+      document.querySelector("#sidebar").classList.toggle("expand");
+  });
+
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -94,7 +103,13 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  emailsView.innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  emailsView.innerHTML = `
+  <h3 class="ms-2 p-3 d-flex gap-3 align-items-center">
+  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-inbox-fill align-self-end" viewBox="0 0 16 16">
+      <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4zm-1.17-.437A1.5 1.5 0 0 1 4.98 3h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 13H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .106-.374z"/>
+  </svg>
+  ${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}
+  </h3>`;
 
   // Show user emails
   fetch(`/emails/${mailbox}`)
@@ -125,34 +140,48 @@ function load_mailbox(mailbox) {
           const archiveText = !isArchive ? 'Archive' : 'Unarchive';
           
           const emailCard = document.createElement('div');
-          emailCard.classList.add('card', 'border', 'border-black');
-  
+          emailCard.classList.add('email-border');
+          emailCard.setAttribute('role','button')
+
+          
           // If email is read, then change card background color
           if (isRead) {
-            emailCard.classList.add('text-bg-light');
+            emailCard.classList.add('email-read');
           }
-  
+          
+          
           const cardBody = document.createElement('div');
-          cardBody.classList.add('card-body');
+          cardBody.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'email-body');
           
           cardBody.innerHTML = `
-          <h5 class="card-title mb-0">${email.subject}</h5>
-          <h6 class="card-subtitle my-0 text-body-secondary"><strong>${email.sender}</strong></h6> 
-          <p class="card-text">${email.timestamp}</p>
+          <p class="ms-4 mb-0 ${isRead ? '' : `fw-bold`}">${email.sender}</p>
+          <p class="mb-0 "> <span class="${isRead ? '' : `fw-bold`}">${email.subject}</span>  <span class="text-muted">- ${email.body.slice(0, 10) + '...'}</span></p>
+          <p class="mb-0 ${isRead ? '' : `fw-bold`}"> <small>${email.timestamp}</small></p>
           `;
+          
           
           emailCard.appendChild(cardBody);
           
           if (mailbox === 'inbox' || mailbox === 'archive') {
             const cardButton = document.createElement('div');
-            cardButton.classList.add('position-absolute', 'bottom-0', 'end-0', 'p-3');
-  
+            cardButton.classList.add('position-absolute', 'top-0', 'end-0', 'p-3');
+            
             const button = document.createElement('button');
-            button.classList.add('btn', 'btn-primary');
+            button.classList.add('btn', 'btn-primary', 'd-none');
             button.textContent = archiveText;
+            
             
             cardButton.appendChild(button);
             emailCard.appendChild(cardButton);
+
+
+            function toggleHover() {
+              button.classList.toggle('d-none');
+            }
+
+            emailCard.addEventListener('mouseenter', toggleHover);
+
+            emailCard.addEventListener('mouseleave', toggleHover);
   
             button.addEventListener('click', () => {
               // Check if email is either archive or not and then mark it
