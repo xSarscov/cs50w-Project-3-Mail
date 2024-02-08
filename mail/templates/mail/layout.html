@@ -3,6 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Mail{% endblock %}</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static 'mail/styles.css' %}">
@@ -11,11 +13,16 @@
     </head>
     <body class="overflow-hidden">
         
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary mb-2">
             <div class="container-fluid">
-                <div class="">
+                <div class="d-flex">
 
                     <button class="toggle-btn" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                        </svg>
+                    </button>
+                    <button class="offcanvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                         </svg>
@@ -29,45 +36,104 @@
                     </a>
                 </div>
 
-                <div class="user-pic-container rounded-circle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <div class="user-pic-container rounded-circle text-center" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <div class="rounded-circle bg-primary p-2" data-bs-html="true" data-bs-toggle="tooltip" data-bs-title="<b>Mail Account</b>
                     {{ request.user.email }}" >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="18" fill="#fff" class="bi bi-person-fill" viewBox="0 0 16 16">
-                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                        </svg>
+                    <span class="text-white fs-5">
+                        {{ request.user.email.0 | upper }}
+                    </span>
                     </div>
                 </div>
             </div>
         </nav>
+          
+          <div class="offcanvas offcanvas-start offcanvas-sm" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasExampleLabel">Mail</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div>
+
+                    <button class="btn rounded-4 sidebar-link my-3 mx-2 p-3" id="compose">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#001D35" class="bi bi-pencil-fill m-0 icon" viewBox="0 0 16 16">
+                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                        </svg>
+                        <span class="ms-2">
+                            Compose
+                        </span>
+                    </button>
+                </div>
+
+                <ul class="sidebar-nav list-unstyled">
+                    <li class="sidebar-item">
+                        <button class="btn sidebar-link rounded-end-pill" id="inbox">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-inbox icon" viewBox="0 0 16 16">
+                                <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4zm9.954 5H10.45a2.5 2.5 0 0 1-4.9 0H1.066l.32 2.562a.5.5 0 0 0 .497.438h12.234a.5.5 0 0 0 .496-.438zM3.809 3.563A1.5 1.5 0 0 1 4.981 3h6.038a1.5 1.5 0 0 1 1.172.563l3.7 4.625a.5.5 0 0 1 .105.374l-.39 3.124A1.5 1.5 0 0 1 14.117 13H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .106-.374z"/>
+                            </svg>
+                            <span>
+                                Inbox
+                            </span>
+                        </button>
+                    </li>
+                    
+                    <li class="sidebar-item">
+                        <button class="btn sidebar-link rounded-end-pill" id="sent">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-send icon" viewBox="0 0 16 16">
+                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                            </svg>
+                            <span>
+                                Sent
+                            </span>
+                        </button>
+                    </li>
+                    <li class="sidebar-item">
+                        <button class="btn sidebar-link rounded-end-pill" id="archived">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-archive icon" viewBox="0 0 16 16">
+                                <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                            </svg>
+                            <span>
+                                Archived
+                            </span>
+                        </button>
+                    </li>
+                    
+                </ul>
+              
+            </div>
+          </div>
+
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog me-3 mt-5">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5 ms-auto" id="exampleModalLabel">{{ request.user.email }}</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex flex-column align-items-center gap-3">
-                        <div class="user-pic-container rounded-circle">
-                            <div class="rounded-circle bg-primary p-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="62" height="60" fill="#fff" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                                </svg>
+                        <div class="user-profile-container  text-center" role="button">
+                            <div class="bg-primary p-3 rounded-circle">
+                                <span class="text-white fs-2">
+                                    {{ request.user.email.0 | upper }}
+                                </span>
                             </div>
                         </div>
-                        <h2>Hi there!</h2>
                     </div>
-                    <div class="modal-footer justify-content-center ">
-                        <a class="text-decoration-none btn btn-danger btn-lg" href="{% url 'logout' %}" data-bs-dismiss="modal">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
-                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
-                            </svg>
-                            <span class="ms-1 fw-semibold">
-                                Log Out
-                            </span>
-                        </a>
+                    <div class="modal-footer justify-content-center">
+                        <div class="bg-light">
+
+                            <a class="text-decoration-none btn btn-danger" href="{% url 'logout' %}" >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                                </svg>
+                                <span class="ms-1 my-2 fw-semibold">
+                                    Log Out
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,15 +141,17 @@
 
         <div class="wrapper">
             <aside id="sidebar">
+                <div>
 
-                <button class="btn  rounded-4 sidebar-link my-3 mx-2 p-3" id="compose">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#001D35" class="bi bi-pencil-fill m-0" viewBox="0 0 16 16">
-                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                    </svg>
-                    <span class="ms-2">
-                        Compose
-                    </span>
-                </button>
+                    <button class="btn rounded-4 sidebar-link my-3 mx-2 p-3" id="compose">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#001D35" class="bi bi-pencil-fill m-0" viewBox="0 0 16 16">
+                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                        </svg>
+                        <span class="ms-2">
+                            Compose
+                        </span>
+                    </button>
+                </div>
 
                 <ul class="sidebar-nav">
                     <li class="sidebar-item">
@@ -121,7 +189,7 @@
                 </ul>
 
             </aside>
-            <main class="container px-0 main me-4  main bg-white rounded-4">
+            <main class="container-fluid px-0 main me-4  main bg-white rounded-4 z-3">
                 {% block body %}
                 {% endblock %}
             </main>

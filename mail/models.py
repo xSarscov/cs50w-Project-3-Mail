@@ -29,4 +29,4 @@ class Email(models.Model):
         }
 
     def __str__(self) -> str:
-        return f'Email sent by {self.sender.username}'
+        return f'{self.subject} by {self.timestamp.strftime("%b %d %Y, %I:%M %p")}'

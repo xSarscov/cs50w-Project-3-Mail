@@ -1,12 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
 html, body {
     height: 100%;
     background-color: #F6F8FC;
     font-size: 14px;
-
+    font-family: "Open Sans", sans-serif;
 }
 
 textarea {
-    min-height: 400px;
+    min-height: 100px !important;
 }
 
 
@@ -29,8 +31,8 @@ textarea {
 }
 
 #sidebar.expand {
-    width: 260px;
-    min-width: 260px;
+    width: 160px;
+    min-width: 160px;
 }
 
 .toggle-btn {
@@ -55,7 +57,10 @@ textarea {
 #sidebar:not(.expand) button.sidebar-link span,
 #sidebar:not(.expand) a.sidebar-link span {
     display: none;
+
 }
+
+
 
 .sidebar-nav {
     padding: 0 0;
@@ -68,7 +73,6 @@ button.sidebar-link, a.sidebar-link {
     display: block;
     font-size: 1.1rem;
     white-space: nowrap;
-    border-left: 3px solid transparent;
 
 }
 
@@ -77,6 +81,9 @@ button.sidebar-link, a.sidebar-link {
     margin-right: .75rem;
 }
 
+.modal-dialog {
+    width: 300px;
+}
 
 .modal-backdrop {
     background-color: transparent;
@@ -84,6 +91,7 @@ button.sidebar-link, a.sidebar-link {
 
 .modal-content {
     background-color: #E9EEF6 !important;
+    box-shadow: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
 }
 
 #compose {
@@ -100,6 +108,7 @@ button.sidebar-link, a.sidebar-link {
 }
 
 .user-pic-container {
+    width: 3.4rem;
     padding: .3rem;
 }
 
@@ -107,9 +116,25 @@ button.sidebar-link, a.sidebar-link {
     background-color: rgba(60,64,67,.12);
 }
 
+.user-profile-container {
+    width: 5.6rem;
+    padding: .3rem;
+}
+
 button.sidebar-link:hover {
     background-color: #EAEBEF;
 }
+
+button.sidebar-link.active {
+    
+    color: #06204B;
+    font-weight: bold;
+    background-color: #D3E3FD !important;
+    border: none !important;
+}
+
+
+
 
 .sidebar-item {
     position: relative;
@@ -166,4 +191,60 @@ button.sidebar-link:hover {
 
 .email-read {
     background-color: #F2F6FC;
+}
+
+.start-95 {
+    left: 95%;
+}
+
+#back-button-container:hover, #archive-button:hover {
+    background-color: rgba(60,64,67,.12);
+    
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+::-webkit-scrollbar {
+    width: 11px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #CCCCCC;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #A8A8A8;
+}
+
+.offcanvas-btn {
+    display: none;
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+    padding: 1rem .8rem;
+}
+
+@media (max-width: 600px) {
+    #sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 20px;
+
+    }
+
+    .modal-dialog {
+        margin-left: auto !important;
+    }
+
+    .toggle-btn {
+        display: none;
+    }
+
+    .offcanvas-btn {
+        display: block;
+    }
 }
