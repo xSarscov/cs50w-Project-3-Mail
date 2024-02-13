@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-
-
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -177,21 +175,21 @@ function load_mailbox(mailbox) {
 
             // Get email timestamp span element
             const dateSpan = emailCard.querySelector('#date');
-            
+            const tooltip = new bootstrap.Tooltip(button);
             
             // Add hover event to the email box to display archive button
             function toggleHover() {
               button.classList.toggle('d-none');
               dateSpan.classList.toggle('invisible');
-              
-
             }
+
             emailCard.addEventListener('mouseenter', toggleHover);
             emailCard.addEventListener('mouseleave', toggleHover);
 
             // Check if email is either archive or not and then mark it
             button.addEventListener('click', () => {
               changeArchivedStatus(email.id, email.archived);
+              tooltip.dispose();
             });
           }
 
@@ -219,14 +217,14 @@ function showEmail(id, archiveText, mailbox) {
     <nav class="navbar mb-3">
             <div class="container-fluid justify-content-start gap-3">
               <div class="rounded-circle" id="back-button-container">
-                  <button class="btn me-0 p-2" id="back-button">
+                  <button class="btn me-0 p-2" id="back-button" data-bs-toggle="tooltip" data-bs-title="Go back to ${mailbox != 'sent' ? 'inbox' : 'sent'}">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
                       </svg>
                   </button>
               </div>
               <div class="rounded-circle" id="archive-button">
-                  <button class="btn me-0 p-2 archive">
+                  <button class="btn me-0 p-2 archive" data-bs-toggle="tooltip" data-bs-title="${archiveText}">
                       <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-archive " viewBox="0 0 16 16">
                        <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
                       </svg>
@@ -264,19 +262,22 @@ function showEmail(id, archiveText, mailbox) {
 
       // Get back button element
       const backButton = document.querySelector('#email-view').querySelector('#back-button');
+      const backButtonTooltip = new bootstrap.Tooltip(backButton);
 
       backButton.addEventListener('click', () => {
         mailbox === 'sent' ? load_mailbox('sent') : load_mailbox('inbox');
+        backButtonTooltip.dispose()
       });
 
 
       // Archive emails
       const archiveButton = document.querySelector('.archive');
+      const tooltip = new bootstrap.Tooltip(archiveButton);
 
       archiveButton.addEventListener('click', () => {
         // Check if email is either archive or not and then mark it
-
         changeArchivedStatus(email.id, email.archived);
+        tooltip.dispose();
       });
 
       // Get reply button element
