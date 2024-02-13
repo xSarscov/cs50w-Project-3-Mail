@@ -240,7 +240,7 @@ button.sidebar-link.active {
         margin-left: auto !important;
     }
 
-    .toggle-btn {
+    .toggle-btn, .inbox-archive-btn {
         display: none;
     }
 

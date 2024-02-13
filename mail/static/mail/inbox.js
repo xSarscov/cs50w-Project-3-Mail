@@ -1,10 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+
+
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
+
+  // Buttons for mobile views
+  document.querySelector('#inbox-mobile').addEventListener('click', () => load_mailbox('inbox'));
+  document.querySelector('#sent-mobile').addEventListener('click', () => load_mailbox('sent'));
+  document.querySelector('#archived-mobile').addEventListener('click', () => load_mailbox('archive'));
+  document.querySelector('#compose-mobile').addEventListener('click', compose_email);
 
   // Send email
   const emailForm = document.querySelector("#compose-form");
@@ -17,11 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
   hamBurger.addEventListener("click", function () {
     document.querySelector("#sidebar").classList.toggle("expand");
   });
-
-
-  // Add bootstrap tooltips events
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -40,10 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
   });
-
+  
+  // Add bootstrap tooltips events
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+    new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+  console.log({tooltipTriggerList});
+  
 });
 
-function compose_email(mailbox) {
+function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -129,6 +139,8 @@ function load_mailbox(mailbox) {
           // Create email box body
           const cardBody = document.createElement('div');
           cardBody.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'email-body');
+          cardBody.setAttribute('data-bs-toggle', 'tooltip');
+          cardBody.setAttribute('data-bs-title', 'hello');
 
           // Set email data
           cardBody.innerHTML = `
@@ -149,11 +161,12 @@ function load_mailbox(mailbox) {
 
             // Create the button and set its properties
             const button = document.createElement('button');
-            button.classList.add('btn', 'btn-primary', 'd-none');
+            button.classList.add('btn', 'btn-primary', 'd-none', 'inbox-archive-btn');
             button.setAttribute('data-bs-toggle', 'tooltip');
             button.setAttribute('data-bs-title', archiveText);
+
             button.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
             <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
             </svg>
             `;
@@ -164,11 +177,14 @@ function load_mailbox(mailbox) {
 
             // Get email timestamp span element
             const dateSpan = emailCard.querySelector('#date');
-
+            
+            
             // Add hover event to the email box to display archive button
             function toggleHover() {
               button.classList.toggle('d-none');
               dateSpan.classList.toggle('invisible');
+              
+
             }
             emailCard.addEventListener('mouseenter', toggleHover);
             emailCard.addEventListener('mouseleave', toggleHover);
@@ -198,7 +214,6 @@ function showEmail(id, archiveText, mailbox) {
   fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {
-
       // Create email detail box and set its data
       const emailDetailsCard = `
     <nav class="navbar mb-3">
@@ -211,8 +226,8 @@ function showEmail(id, archiveText, mailbox) {
                   </button>
               </div>
               <div class="rounded-circle" id="archive-button">
-                  <button class="btn me-0 p-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-archive archive" viewBox="0 0 16 16">
+                  <button class="btn me-0 p-2 archive">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-archive " viewBox="0 0 16 16">
                        <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
                       </svg>
 
@@ -233,7 +248,7 @@ function showEmail(id, archiveText, mailbox) {
           <p class="ms-auto mb-0"><small>${email.timestamp}</small></p>
       </div>
       <div class="ms-5">
-      <p class="text-muted"><small>To ${email.recipients}</small></p>
+      <p class="text-muted"><small>To ${email.recipients.join(', ')}</small></p>
       <p class="">${email.body}</p>
       <button class="btn btn-outline-secondary reply">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
@@ -269,11 +284,11 @@ function showEmail(id, archiveText, mailbox) {
 
       // Load compose email form and set its data
       replyButton.addEventListener('click', () => {
-        compose_email(mailbox);
+        compose_email();
 
         document.querySelector('#compose-recipients').value = mailbox === 'sent' ? email.recipients : email.sender;
         document.querySelector('#compose-subject').value = email.subject.includes('Re: ') ? email.subject : 'Re: ' + email.subject;
-        document.querySelector('#compose-body').value = `\n\n\n <p> On ${email.timestamp} ${email.sender} wrote:</p> ${email.body}`;
+        document.querySelector('#compose-body').value = `\n\n\n <b> On ${email.timestamp} ${email.sender} wrote:</b> ${email.body}`;
       });
 
       document.querySelector('#emails-view').style.display = 'none';
