@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
-  document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
+  document.querySelector('#archived').addEventListener('click', () => load_mailbox('archived'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
   // Buttons for mobile views
   document.querySelector('#inbox-mobile').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent-mobile').addEventListener('click', () => load_mailbox('sent'));
-  document.querySelector('#archived-mobile').addEventListener('click', () => load_mailbox('archive'));
+  document.querySelector('#archived-mobile').addEventListener('click', () => load_mailbox('archived'));
   document.querySelector('#compose-mobile').addEventListener('click', compose_email);
 
   // Send email
@@ -27,27 +27,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // By default, load the inbox
   load_mailbox('inbox');
 
-  // Add sidebar buttons active effect 
-  const sidebar = document.querySelector('.sidebar-nav');
-
-  sidebar.addEventListener('click', (event) => {
-
-    if (event.target.classList.contains('sidebar-link')) {
-      document.querySelectorAll('.sidebar-link').forEach(item => {
-        item.classList.remove('active');
-      });
-
-      event.target.classList.add('active');
-    }
-
-  });
+  // Add inbox buttons active effect 
+  document.querySelector('#inbox').classList.add('active');
   
   // Add bootstrap tooltips events
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   tooltipTriggerList.forEach(function (tooltipTriggerEl) {
     new bootstrap.Tooltip(tooltipTriggerEl);
   });
-  console.log({tooltipTriggerList});
   
 });
 
@@ -74,6 +61,13 @@ function load_mailbox(mailbox) {
   emailsView.style.display = 'block';
   emailsDetailsView.style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
+
+  // Add sidebar buttons active effect 
+  document.querySelectorAll('.sidebar-link').forEach(button => {
+    button.classList.remove('active');
+  });
+
+  document.getElementById(mailbox).classList.add('active');
 
   // Show the mailbox name
   emailsView.innerHTML = `
@@ -290,6 +284,26 @@ function showEmail(id, archiveText, mailbox) {
         document.querySelector('#compose-recipients').value = mailbox === 'sent' ? email.recipients : email.sender;
         document.querySelector('#compose-subject').value = email.subject.includes('Re: ') ? email.subject : 'Re: ' + email.subject;
         document.querySelector('#compose-body').value = `\n\n\n <b> On ${email.timestamp} ${email.sender} wrote:</b> ${email.body}`;
+
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.classList.add('btn', 'btn-outline-danger');
+        cancelButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+        </svg>
+        Cancel
+        `;
+
+        cancelButton.addEventListener('click', () => {
+          showEmail(id, archiveText, mailbox);
+          document.querySelector('#compose-view').style.display = 'none';
+          cancelButton.remove();
+        });
+
+        document.querySelector('#compose-form').appendChild(cancelButton);
+
       });
 
       document.querySelector('#emails-view').style.display = 'none';
