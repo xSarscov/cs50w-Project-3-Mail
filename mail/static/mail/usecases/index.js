@@ -5,4 +5,3 @@ export * from './createEmail.js';
 export * from './createEmailDetails.js';
 export * from './createArchiveButton.js';
 export * from './createReplyButton.js';
-export * from './showEmailDetails.js';

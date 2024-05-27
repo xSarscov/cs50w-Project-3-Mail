@@ -1,6 +1,9 @@
+import { showEmailDetailsFetch } from "../helpers/showEmailDetailsFetch.js";
 import { createArchiveButton, createReplyButton } from "./index.js";
 
-export const createEmailDetails = (email, load_mailbox, compose_email) => {
+export const createEmailDetails = async(id, load_mailbox, compose_email, mailbox) => {
+    const email = await showEmailDetailsFetch(id);
+
     const emailDiv = document.createElement('div');
     emailDiv.innerHTML = `
 
@@ -15,9 +18,14 @@ export const createEmailDetails = (email, load_mailbox, compose_email) => {
 
     `;
 
-    const archiveButton = createArchiveButton(email.id, email.archived, load_mailbox);
-    const replyButton = createReplyButton(email, compose_email);
-    emailDiv.append(archiveButton, replyButton);
+    if (mailbox !== 'sent') {
+        const archiveButton = createArchiveButton(email.id, email.archived, load_mailbox);
+        emailDiv.append(archiveButton);
+
+    } 
+
+    const replyButton = createReplyButton(email, compose_email, mailbox);
+    emailDiv.append(replyButton);
 
     return emailDiv;
     

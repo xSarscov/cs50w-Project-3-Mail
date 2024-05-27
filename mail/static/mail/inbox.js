@@ -1,5 +1,5 @@
-import { readFetch, showMailboxFetch } from "./helpers/index.js";
-import { setForm, sendEmail, createEmail, showEmailDetails } from "./usecases/index.js";
+import { clearForm, readFetch, showMailboxFetch } from "./helpers/index.js";
+import { setForm, sendEmail, createEmail, createEmailDetails } from "./usecases/index.js";
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+async function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -32,15 +32,9 @@ function compose_email() {
 
   const form = document.querySelector('#compose-form');
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
+  form.removeEventListener('submit', sendEmail);
 
-    sendEmail();
-    clearForm();
-
-  });
-
-
+  form.addEventListener('submit', sendEmail);
 }
 
 async function load_mailbox(mailbox) {
@@ -58,11 +52,13 @@ async function load_mailbox(mailbox) {
   const emails = await showMailboxFetch(mailbox);
 
   emails.forEach(email => {
-    const emailDiv = createEmail(email);
+    const emailDiv = createEmail(email, load_mailbox, mailbox);
 
-    emailDiv.addEventListener('click', async() => {
+    const emailBody = emailDiv.querySelector('.card-body');
+
+    emailBody.addEventListener('click', async() => {
       await readFetch(email.id);
-      const emailDetailsDiv = await showEmailDetails(email.id, load_mailbox, compose_email);
+      const emailDetailsDiv = await createEmailDetails(email.id, load_mailbox, compose_email, mailbox);
       emailsContainer.innerHTML = '';
       emailsContainer.append(emailDetailsDiv);
     });
@@ -72,8 +68,3 @@ async function load_mailbox(mailbox) {
 
 }
 
-const clearForm = () => {
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
-}

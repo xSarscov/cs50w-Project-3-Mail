@@ -1,7 +1,8 @@
 import { customAlert } from './index.js'
-import { sendEmailFetch } from '../helpers/index.js'
+import { clearForm, sendEmailFetch } from '../helpers/index.js'
 
-export const sendEmail = async () => {
+export const sendEmail = async (event) => {
+  event.preventDefault();
 
   const recipients = document.querySelector('#compose-recipients').value;
   const subject = document.querySelector('#compose-subject').value;
@@ -23,4 +24,5 @@ export const sendEmail = async () => {
   }
 
   customAlert(alertInfo);
+  clearForm();
 }

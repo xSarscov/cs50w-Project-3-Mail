@@ -1,4 +1,5 @@
 import { archiveFetch } from "../helpers/index.js";
+import { customAlert } from "./customAlert.js";
 
 export const createArchiveButton = (id, isArchive, load_mailbox) => {
     const archiveButton = document.createElement('button');
@@ -13,6 +14,14 @@ export const createArchiveButton = (id, isArchive, load_mailbox) => {
 
     archiveButton.addEventListener('click', async() => {
         await archiveFetch(id, isArchive);
+        
+        const alertInfo = {
+            message: `Email has been ${ (isArchive) ? 'unarchived' : 'archived' }.`,
+            messageType: 'success',
+        }
+
+        customAlert(alertInfo);
+
         load_mailbox('inbox');
     });
 

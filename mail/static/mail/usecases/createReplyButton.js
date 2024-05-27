@@ -1,6 +1,6 @@
 import { setForm } from "./index.js";
 
-export const createReplyButton = ({ sender, recipients, subject, body, timestamp }, compose_email) => {
+export const createReplyButton = ({ sender, recipients, subject, body, timestamp }, compose_email, mailbox) => {
     const replyButton = document.createElement('button');
     replyButton.classList.add('btn', 'btn-secondary', 'ms-2');
     replyButton.innerText = 'Reply';
@@ -8,7 +8,7 @@ export const createReplyButton = ({ sender, recipients, subject, body, timestamp
     replyButton.addEventListener('click', () => {
         compose_email();
         setForm({
-            initialRecipients: sender, 
+            initialRecipients: mailbox !== 'sent' ? sender : recipients, 
             initialSubject: subject.includes('Re: ') ? subject : `Re: ${subject}`,
             initialBody: `\nOn ${timestamp}, ${sender} wrote: "${body}"`
         });
